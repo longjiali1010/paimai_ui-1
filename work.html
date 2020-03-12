@@ -42,7 +42,7 @@
 								</el-menu-item-group>
 							</el-submenu>
 						</el-menu>
-						<el-menu v-if="user.usersf=='管理员'">
+						<el-menu v-if="user.usersf=='1'">
 							<el-submenu>
 								<template slot="title">
 									<i class="el-icon-user"></i>
@@ -87,9 +87,9 @@
 				},
 				remove(){
 					let _this=this;
-				    $.getJSON(`http://127.0.0.1:8080/api/paimai/userremove`, function(date){
+				   // $.getJSON(`http://127.0.0.1:8080/api/paimai/userremove`, function(date){
 					      location.href="glylogin.html";
-				});
+				//});
 				},
 			},
 			mounted() {
