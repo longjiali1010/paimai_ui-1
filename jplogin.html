@@ -9,7 +9,7 @@
 		<script type="text/javascript" src="js/jq_ajax_config.js"></script>
 </head>
 <style type="text/css">
-body{
+/*body{
 			background: url(images/176883601953d6fbe75acde.jpg);
 			background-repeat: no-repeat;   //不重复
     		background-size: 100% 100%;     // 满屏
@@ -25,68 +25,76 @@ body{
 }
 	[v-cloak] {
 				display: none;
-			}
+			}*/
 </style>
 <body>
 <div id="zhuce" style="text-align: center;" v-cloak>
-	<el-container>
-  <el-header>
-  	<h1 style="color: #E6A23C;padding-left: 3ex;">竞拍者注册</h1>
-  </el-header>
-  <el-main>
-  	<el-col :span="8">
-  	<el-form :model="forms" ref="forms" :rules="rules" label-width="80px">
-				<el-form-item size="mini" label="用户名" prop="userName">
-					<el-col>
-						<el-input size="mini" v-model="forms.userName" placeholder="请输入用户名"></el-input>
+	<el-row>
+				<div>
+					<h2 style="color: #0096FF; float: left;">用户注册</h2>
+				</div>
+			</el-row>
+			<el-form :model="user" ref="shoppForm" :rules="shoppRules" label-width="100px">
+				<el-form-item label="用户名" prop="username">
+					<el-col :span="6">
+						<!--非常重要-->
+						<el-input v-model="user.username" placeholder="请输入用户名"></el-input>
 					</el-col>
 				</el-form-item>
-				<el-form-item size="mini" label="密码" prop="userPwd">
-					<el-col>
-						<el-input size="mini" type="password" v-model="forms.userPwd" placeholder="请输入密码"></el-input>
+				<el-form-item label="密码" prop="usermm">
+					<el-col :span="6">
+						<!--非常重要-->
+						<el-input v-model="user.usermm" placeholder="请输入密码"></el-input>
 					</el-col>
 				</el-form-item>
-				<el-form-item size="mini" label="身份证号" prop="userIdCard">
-					<el-col>
-						<el-input size="mini" v-model="forms.userIdCard" placeholder="请输入身份证号"></el-input>
+				<el-form-item label="身份证号" prop="usersfz">
+					<el-col :span="6">
+						<!--非常重要-->
+						<el-input v-model="user.usersfz" placeholder="请输入身份证号"></el-input>
 					</el-col>
 				</el-form-item>
-				<el-form-item size="mini" label="电话" prop="userPhone">
-					<el-col>
-						<el-input size="mini" v-model="forms.userPhone" placeholder="请输入电话号码"></el-input>
+				<el-form-item label="电话" prop="userdh">
+					<el-col :span="6">
+						<!--非常重要-->
+						<el-input v-model="user.userdh" placeholder="请输入电话"></el-input>
 					</el-col>
 				</el-form-item>
-				<el-form-item size="mini" label="住址" prop="userAddress">
-					<el-col>
-						<el-input size="mini" v-model="forms.userAddress" placeholder="请输入住址"></el-input>
+				<el-form-item label="住址" prop="userdz">
+					<el-col :span="6">
+						<!--非常重要-->
+						<el-input v-model="user.userdz" placeholder="请输入住址"></el-input>
 					</el-col>
 				</el-form-item>
-				<el-form-item size="mini" label="邮政编码" prop="userCode">
-					<el-col>
-						<el-input size="mini" v-model="forms.userCode" placeholder="请输入邮政编码"></el-input>
+				<el-form-item label="邮政编码" prop="useryzbh">
+					<el-col :span="6">
+						<!--非常重要-->
+						<el-input v-model="user.useryzbh" placeholder="请输入邮政编码"></el-input>
 					</el-col>
 				</el-form-item>
-				<el-form-item size="mini" label="验证码" prop="yzm">
-					<el-col>
-						<el-input size="mini" v-model="yzm" placeholder="请输入验证码"></el-input>
-					</el-col>
-				</el-form-item>
-				<el-form-item label="" prop="">
-					<el-col>
-						<span class="wordp lf"><img src="images/img2.jpg" width="96" height="36" alt="" /></span>
-            <span class="blues lf"><a href="" title="">看不清</a></span>
-					</el-col>
-				</el-form-item>
+				
+                  <el-form-item label="用户权限">
+                  	<el-col :span="6">
+                      <el-select v-model="user.usersf" placeholder="请选择">
+                      <el-option label="用户" value="用户"></el-option>
+                      <el-option label="管理员" value="管理员"></el-option>
+                     </el-select>
+                     </el-col>
+                  </el-form-item>
+				
+		
 				<el-form-item>
-					<el-button type="primary" @click="reg">注册</el-button>
-					<el-button type="danger" @click="cancel">取消</el-button>
+					<el-col :span="4">
+						<input name="" type="checkbox" id="rem_u" />
+						<label for="rem_u" class="labels">我同意<span class="blues">《服务条款》</span></label>
+					</el-col>
 				</el-form-item>
-		</el-form>
-		</el-col>
-		<el-col :span="8"></el-col>
-  </el-main>
-	</el-container>
-	
+
+				<el-form-item>
+					<el-col :span="4">
+						<el-button type="primary" @click="reg">立即注册</el-button>
+					</el-col>
+				</el-form-item>
+			</el-form>
 
 </div>
  <!--footer end-->
@@ -98,44 +106,40 @@ body{
 	var Main = new Vue({
 		el:"#zhuce",
 		data:{
-			forms:{
-				userName:"",
-				userPwd:"",
-				userIdCard:"",
-				userPhone:"",
-				userAddress:"",
-				userCode:""
+			user: {
+					username: '',
+					usermm: '',
+					usersfz: '',
+					userdh: '',
+					userdz: '',
+					useryzbh: '',
+					usersf:''
+					
 			},
-			yzm:"",
-			rules:{
-				userName:[{
+			shoppRules:{
+				username:[{
 					min: 6,
 					required:true,
 					message:"用户名要求不低于6个字符",
 					trigger:"blur"
 				}],
-				userPwd:[{
+				usermm:[{
 					min: 6,
 					required:true,
 					message:"密码要求不低于6个字符",
 					trigger:"blur"
 				}],
-				userIdCard:[{
+				usersfz:[{
 					required:true,
 					message:"身份证号必填",
 					trigger:"blur"
 				}],
-				userPhone:[{
-					required:true,
-					message:"电话号码必填",
-					trigger:"blur"
-				}],
-				userAddress:[{
+				userdz:[{
 					required:true,
 					message:"住址必填",
 					trigger:"blur"
 				}],
-				userCode:[{
+				useryzbh:[{
 					required:true,
 					message:"邮政编码必填",
 					trigger:"blur"
@@ -149,8 +153,9 @@ body{
 		},
 		methods:{
 			reg(){
+				
 				let _this = this;
-				this.$refs['forms'].validate(valid => {
+				this.$refs['shoppForm'].validate(valid => {
 					if(valid) {
 							//验证通过
 							//自定义加载块
@@ -162,12 +167,12 @@ body{
 							});
 							//延迟2秒，模拟网络延迟
 							setTimeout(() => {
+								let _this = this;
 								this.$alert('注册成功！', '系统提示');
 								loading.close(); //关闭加载块【非常重要】
-								location.href='竞拍者登录.html';
-								/*$.ajax('http://localhost:8080/springmvc_4/api/persons/person', {
+								$.ajax('http://127.0.0.1:8080/api/paimai/zhuce', {
 									type: 'post',
-									data: JSON.stringify(this.person),
+									data: JSON.stringify(_this.user),
 									dataType: 'json',
 									contentType: 'application/json',
 									success(msg) {
@@ -177,10 +182,12 @@ body{
 												type: 'success',
 												message: '新增成功'
 											});
+											_this.showView('glylogin.html');
 											_this.clearData(); //清除数据
+											
 										}
 									}
-								});*/
+								});
 							}, 2000);
 						} else {
 							//验证失败
@@ -188,9 +195,9 @@ body{
 					}
 				})
 			},
-			cancel(){
-				location.href='glylogin.html';
-			}
+		  showView(url) {
+					window.location.href = url;
+				}
 		}
 	});
 </script>

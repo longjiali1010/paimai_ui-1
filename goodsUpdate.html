@@ -1,187 +1,217 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>无标题文档</title>
-<style>
-	.el-upload-list__item{
-		max-width: 205px;
-	}
-	.el-button{
-		width: 120px;
-	}
-</style>
-</head>
 
-<body>
-<div class="wrap"  id="goodsUpdateApp">
-  <!-- main begin-->
-    
- <el-form :model="goods" :rules="rules" ref="resetForm" label-width="100px" class="demo-ruleForm">
- 	    <h1  style="text-align: center;height: 30px;    line-height: 30px; color: #E6A23C;">拍卖商品修改</h1>
-  <el-form-item label="名称" prop="nameMC">
-    <el-input style="width:300px;" v-model="goods.nameMC"></el-input>
-  </el-form-item>
- 
-   <el-form-item label="起拍价" prop="price">
-    						<el-input
-    							style="width:300px;"
-    maxlength="8"
-    oninput="value=value.replace(/[^\d.]/g,'')"
-    v-model="goods.price"
-    placeholder="请输入价格"
-clearable
-  >
-  </el-form-item>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>无标题文档</title>
+		<link href="css/common.css" rel="stylesheet" type="text/css" />
+		<link href="css/style.css" rel="stylesheet" type="text/css" />
+	</head>
 
+	<body>
+		<div id="addsApp" v-loading="loading">
+			<el-row>
+				<div>
+					<h1 class="lf">在线拍卖系统</h1>
+				</div>
+			</el-row>
+			<el-row>
+				<div>
+					<h2 style="color: #0096FF; float: left;">拍卖商品信息修改</h2>
+				</div>
+			</el-row>
+			<el-form :model="pmp" ref="shoppForm" :rules="shoppRules" label-width="100px">
+				<el-form-item label="名称" prop="pmpname">
+					<el-col :span="6">
+						<!--非常重要-->
+						<el-input v-model="pmp.pmpname" placeholder="请输入名称"></el-input>
+					</el-col>
+				</el-form-item>
+				<el-form-item label="起拍价" prop="pmpqpj">
+					<el-col :span="6">
+						<!--非常重要-->
+						<el-input v-model="pmp.pmpqpj" placeholder="请输入拍价"></el-input>
+					</el-col>
+				</el-form-item>
+				<el-form-item label="底价" prop="pmpdj">
+					<el-col :span="6">
+						<!--非常重要-->
+						<el-input v-model="pmp.pmpdj" placeholder="请输入底价"></el-input>
+					</el-col>
+				</el-form-item>
+				<el-form-item label="开始时间" prop="pmpkssj">
+					<el-col :span="6">
+						<!--非常重要-->
+						<el-input  v-model="pmp.pmpkssj"></el-input>
+					</el-col>
+				</el-form-item>
+				<el-form-item label="结束时间" prop="pmpjssj">
+					<el-col :span="6">
+						<!--非常重要-->
+						<el-input  v-model="pmp.pmpjssj" ></el-input>
+					</el-col>
+				</el-form-item>
+				<el-form-item label="拍卖品图片" prop="pmptplj">
+					<el-col :span="6">
+						<div v-if="img!=''"><el-image style="width: 60px; height: 60px" :src="img" :preview-src-list="srcList">
+								</el-image></div>
+						<el-upload action='' :on-change="getFile" :limit="1" list-type="picture" :auto-upload="false">
+						<el-button size="small" type="danger">点击上传</el-button>
+					</el-upload>
+					
+					</el-col>
+				</el-form-item>
+				<el-form-item label="描述" prop="pmpms">
+					<el-col :span="6">
+						<!--非常重要-->
+						<el-input v-model="pmp.pmpms" type="textarea" style="width: 350px;" placeholder="请输入介绍"></el-input>
+					</el-col>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" @click="adduser">提交</el-button>
+					<el-button type="danger">取消</el-button>
+				</el-form-item>
+			</el-form>
+		</div>
 
-   <el-form-item label="开始时间" prop="startDate">
-    <el-date-picker type="date" placeholder="选择日期" v-model="goods.startDate" style="width:300px;"></el-date-picker>
-  </el-form-item>
- <el-form-item label="结束时间" prop="endDate">
-    <el-date-picker type="date" placeholder="选择日期" v-model="goods.endDate" style="width:300px;"></el-date-picker>
-  </el-form-item>
-  <el-form-item label="描述" prop="nameMS">
-    <el-input style="width:300px;" type="textarea" v-model="goods.nameMS"></el-input>
-  </el-form-item>
-  
+	</body>
+	<script>
+		var addsApp = new Vue({
+			el: '#addsApp',
+			data: {
+				img:'',
+				pmpid:0,
+				loading: true,
+				pmp: {
+					pmpid:0,
+					pmpname: '',
+					pmpqpj: '',
+					pmpdj: '',
+					pmpkssj: '',
+					pmpjssj: '',
+					pmptpkzm: '',
+					pmpms: ''
+				},
+				shoppRules: {
+					sno: [{
+						required: true,
+						message: '名称不能为空',
+						trigger: 'blur' //移除触发
+					}],
+					sname: [{
+						required: true,
+						message: '请输入起拍价',
+						trigger: 'blur'
+					}],
+					sbiao: [{
+						required: true,
+						message: '请输入底价',
+						trigger: 'blur'
+					}],
+					shao: [{
+						required: true,
+						message: '请输入开始时间',
+						trigger: 'blur'
+					}],
+					sprice: [{
+						required: true,
+						message: '请输入结束时间',
+						trigger: 'blur'
+					}],
+					stext: [{
+						required: true,
+						message: '请输入介绍',
+						trigger: 'blur'
+					}]
+				}
+			},
+			methods: {
+				getBase64(file) {
+					return new Promise(function(resolve, reject) {
+						let reader = new FileReader();
+						let imgResult = "";
+						reader.readAsDataURL(file);
+						reader.onload = function() {
+							imgResult = reader.result;
+						};
+						reader.onerror = function(error) {
+							reject(error);
+						};
+						reader.onloadend = function() {
+							resolve(imgResult);
+						};
+					});
+				},
+				handleAvatarSuccess(res, file) {
+					this.imageUrl = URL.createObjectURL(file.raw);
+				},
+				beforeAvatarUpload(file) {
+					const isJPG = file.type === 'image/jpeg';
+					const isLt2M = file.size / 1024 / 1024 < 2;
 
-  <el-form-item prop="goodsImg">
-  <div style="float: right;margin-top: -43ex;margin-right:35ex;">
-  <el-upload
-  class="upload-demo"
-  action="https://jsonplaceholder.typicode.com/posts/"
-  :on-preview="handlePreview"
-  :on-remove="handleRemove"
-  :file-list="fileList"
-  :on-change="checkType"
-  list-type="picture"
-  	>
-  <el-button size="small" type="primary">竞拍图片上传</el-button>
-  <div slot="tip" class="el-upload__tip">只能上传jpg/png/jpeg文件，且不超过1.5M</div>
-</el-upload>
-  
-  </div>
-  </el-form-item>
-  <el-form-item>
-  	
-    <el-button type="primary" @click="submitForm('resetForm')">提交</el-button>
-    <el-button @click="resetForm('resetForm')">返回</el-button>
-  </el-form-item>
-</el-form>
-</div>
-</body>
-<script>
-	var Main={
-    data() {
-      return {
-      	fileList:[],
-      goods:{
-      		goodsId:'',
-          startDate:'',
-          endDate:'',
-          nameMS:'',
-          nameMC:'',
-					price:'',
-					status:0,
-      		goodsImg:""
-      	},
-        rules: {
-          nameMC: [
-            { required: true, message: '请输入名称', trigger: 'blur' }
-          ],
-          fileList: [
-            { type: 'file', required: true, message: '请选择日期', trigger: 'change' }
-          ], 
-          startDate: [
-            { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-          ],
-          endDate: [
-            { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
-          ],
-          price: [
-            { required: true, message: '请输入起拍价格', trigger: 'blur' }
-          ],
-          nameMS: [
-            { required: true, message: '请输入描述', trigger: 'blur' }
-          ]
-        }
-      };
-    },
-    methods: {
-    	
-    	/*图片操作*/
-    	 handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
-      handlePreview(file) {
-        console.log(file);
-      },
-      
-      /*修改提交*/
-      submitForm(formName) {
+					if(!isJPG) {
+						this.$message.error('上传头像图片只能是 JPG 格式!');
+					}
+					if(!isLt2M) {
+						this.$message.error('上传头像图片大小不能超过 2MB!');
+					}
+					return isJPG && isLt2M;
+				},
+				getFile(file, fileList) {
+					//图片名称
+					this.filename = file.name;
+					//调用base64方法
+					this.getBase64(file.raw).then(res => {
+						console.log(res)
+						this.pmp.pmptpkzm = res;
+					});
+				},
+				adduser() {
+					let _this = this;
+					this.$refs['shoppForm'].validate(valid => {
+						if(valid) {
+							$.ajax(`http://127.0.0.1:8080/api/paimai/addpmp`, 
+							{
+								type: "post",
+								contentType: "application/json",
+								data: JSON.stringify(_this.pmp),
+								dataType: "json",
+								success(date) {
+									if(date.code == "200") {
+										_this.$message(date.msg);
+										indexApp.showView('goodsGLiList.html');
+									} else {
+										_this.$message(date.msg);
+									}
+								}
+							});
+						} else {
+							//验证失败
+							this.$alert('请按格式正确填写信息', '系统提示');
+						}
+					});
+				},
+				goToPage(){
+					let _this = this;
+					$.getJSON(`http://127.0.0.1:8080/api/paimai/jingpaiwu/${_this.pmp.pmpid}`, function(date) 
+					{
+						_this.pmp=date;
+						_this.img=date.pmptpkzm;
+					});
+				}
+			},
+			mounted() {
+				setTimeout(() => {
+					this.loading = false;
+					this.pmpid = sessionStorage.getItem('pmpid1');
+					if(this.pmpid!="null"){
+						this.pmp.pmpid=this.pmpid;
+						sessionStorage.setItem('pmpid1', null);
+						this.goToPage();
+					}
+				}, 1000);
+			}
+		});
+	</script>
 
-      		 this.$refs[formName].validate((valid) => {
-          if (valid) {
-          	     	     	if(this.fileList.length==0){
-      		this.$notify({
-          title: '警告',
-          message: '未选择图片',
-          type: 'warning',
-            offset: 100
-        });
-      	}else{
-      		alert('submit!');
-      	}
-          
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-      		
-      	
-       
-      },
-      /*返回*/
-      resetForm(formName) {
-       $("#cnt").load("goodsGLiList.html")
-      },
-      /*图片格式判断*/
-      checkType(file,fileList){
-      	
-      	/*不管怎么选择 只能选一张*/
-      	let fileType=file.name.substring(file.name.lastIndexOf('.')+1);
-   		this.fileList=[];//清除之前的
-      	this.fileList.splice(0,0,file);//保存现在选择的图片
-      	if(fileType =='jpeg' || fileType =='jpg' || fileType == 'png' || fileType =='JPEG' || fileType =='JPG' || fileType == 'PNG'){
-      	
-      	}else{
-      		
-      		this.fileList=[];
-      	 this.$notify.error({
-          title: '错误',
-          message: '图片格式错误',
-          offset: 100
-        });
-      			return false;
-      	}
-      	
-      	if(file.size / 1024 / 1024 >1.5 ){
-      	this.fileList=[];
-      	 this.$notify.error({
-          title: '错误',
-          message: '图片大小不能超过1.5M',
-          offset: 100
-        });
-      				return false;
-      	}
- 
-      	
-      }
-    }
-  }
-	var goodsUpdateApp=Vue.extend(Main);
-			new goodsUpdateApp().$mount("#goodsUpdateApp")
-</script>
 </html>

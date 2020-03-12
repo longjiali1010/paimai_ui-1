@@ -1,299 +1,180 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>无标题文档</title>
 
-<style type="text/css">
-	.el-main {
-    background-color: #E9EEF3;
-    color: #333;
-    text-align: center;
-    line-height:0px; 
-}
-.wrap {
-    width: 1000px;
-    text-align: center;
-    margin: 0 auto;
-}
-.el-pagination{
-    margin-top: 2ex;
-}
-.el-input__inner {
-	max-width: 128px;
-}
-.el-input{
-	max-width: 128px;
-}
-.forms>label{
-	font-size: 16px;
-}
-.forms{
-
-	text-align: left;
-}
-
-</style>
-</head>
-
-<body>
-<div class="wrap" id="goodsGLiListApp">
-<!-- main begin-->
-  <div class="forms">
-    <label for="name">名称</label>
-<el-input
-	  	 size="mini"
-  placeholder="请输入名称"
-  v-model="good.nameMC"
-  clearable>
-</el-input>
-        <label for="names">描述</label>
-<el-input
-	  	 size="mini"
-  placeholder="请输入描述"
-  v-model="good.nameMS"
-  clearable>
-</el-input>
-
-        <label for="time">开始时间</label>
-<el-date-picker
-           	 size="mini"
-      v-model="good.startDate"
-      type="datetime"
-      placeholder="开始时间"
-      align="right"
-     >
-    </el-date-picker>
-
-        <label for="end-time">结束时间</label>
-           <el-date-picker
-           	 size="mini"
-      v-model="good.endDate"
-      type="datetime"
-      placeholder="结束时间"
-      align="right"
-   >
-    </el-date-picker>
-    <label for="price">起拍价</label>
-<el-input
-	 size="mini"
-    maxlength="8"
-    oninput="value=value.replace(/[^\d.]/g,'')"
-    v-model="good.price"
-    placeholder="请输入价格"
-clearable
-></el-input>
-   <el-button type="primary" >查看</el-button>
-  </div>
-
-  <template>
-   <el-table
-   	 v-loading="loading"
-    :data="goods"
-    border
-    style="width: 100%">
-    <el-table-column
-      prop="nameMC"
-      label="名称"
-      width="180">
-    </el-table-column>
-    <el-table-column
-      prop="nameMS"
-      label="描述"
-      width="180">
-    </el-table-column>
-    <el-table-column
-      prop="startDate"
-      label="开始时间">
-    </el-table-column>
-    
-    <el-table-column
-      prop="endDate"
-      label="结束时间">
-    </el-table-column>
-    <el-table-column
-      prop="price"
-      label="起拍价">
-    </el-table-column>
-       <el-table-column
-      label="操作"
-      align="center"
-      >
-      <template slot-scope="temp">
-      	
-      	 <el-button
-          size="mini"
-            type="danger"
-          @click="update(temp.$index,temp.row)">修改</el-button>
-       <el-button
-          size="mini"
-          type="danger"
-          @click="goodsDelete(temp.$index,temp.row)">删除</el-button>
-          
-      </template>
-    </el-table-column>
-  </el-table>
-  <div class="block">
- 
-    <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="1"
-      :page-sizes="[3,5,8]"
-      :page-size="100"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total=goods.length>
-    </el-pagination>
-  </div>
-</template>
-
-<!-- main end-->
-</div>
-
-</body>
-<script >
-var main={
-	  methods: {
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-      },
-      handleCurrentChange(val) {
-      	/*这里是用来分页  参数val是当前页*/
-        console.log(`当前页: ${val}`);
-      },
-      /*修改*/
-      update(index,obj){ 	
-      	$("#cnt").load("goodsUpdate.html");
-
-      },
-      handleClose(done){
-					this.$confirm("是否关闭！").then(()=>{
-						done(); //关闭
-					}).catch(()=>{
-						//错误
-						console.debug('取消操作');
-					})
-				}
-      ,
-      /*删除*/
-      goodsDelete(index,obj){
-      let _this=this;
-      	  this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-        	workapp.loading=true;
-        	setTimeout(()=>{
-        		workapp.loading=false;
-        		_this.goods.splice(index,1)
-        		   this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-        	},500);
-        	
-        	
-       
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
-        });
-      	
-      }
-    },
-    data() {
-      return {
-      	dialogFormVisible:false,
-      	loading:true,
-      	good:{
-      		goodsId:'',
-          startDate:'',
-          endDate:'',
-          nameMS:'',
-          nameMC:'',
-			price:'',
-			status:0
-      		
-      	},
-        goods: [{
-        	goodsId:1,
-          startDate: '2016-05-03',
-          endDate: '2016-05-03',
-          nameMS: '冥国脏鼠',
-          nameMC:'国书',
-					price:1000,
-			status:0
-        }, {
-        	goodsId:1,
-            startDate: '2016-05-03',
-          endDate: '2016-05-03',
-          nameMS: '冥国脏鼠',
-          nameMC:'国书',
-					price:1000,
-			status:0
-        }, {
-        	goodsId:1,
-            startDate: '2016-05-03',
-          endDate: '2016-05-03',
-          nameMS: '冥国脏鼠',
-          nameMC:'国书',
-					price:1000,
-			status:0
-        }, {
-        	goodsId:1,
-          startDate: '2016-05-03',
-          endDate: '2016-05-03',
-          nameMS: '冥国脏鼠',
-          nameMC:'国书',
-					price:1000,
-			status:0
-        }, {
-        	goodsId:1,
-           startDate: '2016-05-03',
-          endDate: '2016-05-03',
-          nameMS: '冥国脏鼠',
-          nameMC:'国书',
-					price:1000,
-			status:0
-        }, {
-        	goodsId:1,
-           startDate: '2016-05-03',
-          endDate: '2016-05-03',
-          nameMS: '冥国脏鼠',
-          nameMC:'国书',
-					price:1000,
-			status:0
-        }, {
-        	goodsId:1,
-          startDate: '2016-05-03',
-          endDate: '2016-05-03',
-          nameMS: '冥国脏鼠',
-          nameMC:'国书',
-					price:1000,
-			status:0
-        }, {
-        	goodsId:1,
-          startDate: '2016-05-03',
-          endDate: '2016-05-03',
-          nameMS: '冥国脏鼠',
-          nameMC:'国书',
-					price:1000,
-			status:0
-        }]
-      }
-    },
-		mounted(){
-			let _this=this;
-			setTimeout(()=>{
-				_this.loading=false;
-			},1000);
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>无标题文档</title>
+		<link href="css/common.css" rel="stylesheet" type="text/css" />
+		<link href="css/style.css" rel="stylesheet" type="text/css" />
+		<style>
+			.el-table .warning-row {
+				background: #EBF6FA;
+			}
 			
-		}
-  }
-	var goodsGLiListApp=Vue.extend(main);
-			new goodsGLiListApp().$mount("#goodsGLiListApp")
-</script>
+			.el-table .success-row {
+				background: #EBF6FA;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="personApp" v-loading="loading">
+			<el-row>
+				<div>
+					<h1 class="lf">在线拍卖系统</h1>
+				</div>
+				<el-col :span="24">
+					<el-row :span="24">
+						<el-col :span="4">
+							名称
+							<el-input v-model="tiaojian.pmpname" placeholder=""></el-input>
+						</el-col>
+						<el-col :span="4">
+							描述
+							<el-input v-model="tiaojian.pmpms" placeholder=""></el-input>
+						</el-col>
+						<el-col :span="4">
+							开始时间
+							<el-input type="date" v-model="tiaojian.pmpkssj" placeholder=""></el-input>
+						</el-col>
+						<el-col :span="4">
+							结束时间
+							<el-input type="date" v-model="tiaojian.pmpjssj" placeholder=""></el-input>
+						</el-col>
+						<el-col :span="4">
+							起拍价
+							<el-input placeholder="上下浮动1000" v-model="tiaojian.pmpqpj" placeholder=""></el-input>
+						</el-col>
+						<el-col :span="4">
+							<el-button style="margin-top: 18px;" type="danger" round @click="chaxun">查询</el-button>
+						</el-col>
+					</el-row>
+                  
+                 
+					<el-table :default-sort="{prop: 'pdate', order: 'descending'}" :data="pageInfo.list" border :row-class-name="tableRowClassName" style="width: 100%">
+						<el-table-column prop="pmpname" label="名称"  width="130">
+						</el-table-column>
+						<el-table-column prop="pmpms" label="描述"  width="130">
+						</el-table-column>
+						<el-table-column prop="pmpkssj" label="开始时间"  width="130">
+						</el-table-column>
+						<el-table-column prop="pmpjssj" label="结束时间"  width="130">
+						</el-table-column>
+						<el-table-column prop="pmpqpj" label="起拍价"  width="130">
+						</el-table-column>
+						<el-table-column label="操作">
+							<template slot-scope="temp">
+								<el-button icon="el-icon-edit" size="mini" type="danger" @click="xiugai(temp.row.pmpid)">修改</el-button>
+								<el-button icon="el-icon-delete" size="mini" type="danger" @click="shangchu(temp.row.pmpid,temp.row.pmpkssj,temp.row.pmpjssj)">删除</el-button>
+							</template>
+						</el-table-column>
+
+					</el-table>
+			
+			<el-row>
+				<el-col :span="24">
+					<el-pagination v-if="pageInfo.total!=0" :background="true" :pager-count="4" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.pageNum" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[3,6]" layout="total, sizes, prev, pager, next, jumper">
+					</el-pagination>
+				</el-col>
+			</el-row>
+		</div>
+
+	</body>
+	<script>
+		var personApp = new Vue({
+			el: '#personApp',
+			data: {
+				pageInfo: [],
+				tiaojian: {
+					pmpid: null,
+					pmpname: null,
+					pmpqpj: null,
+					pmpdj: null,
+					pmpkssj: null,
+					pmpjssj: null,
+					pmptplj: null,
+					pmptpkzm: null,
+					pmpms: null
+				},
+				loading: true
+			},
+			methods: {
+				chaxun() {
+						if(this.tiaojian.pmpname==''){this.tiaojian.pmpname=null};
+					if(this.tiaojian.pmpms==''){this.tiaojian.pmpms=null};
+					if(this.tiaojian.pmpkssj==''){this.tiaojian.pmpkssj=null};
+					if(this.tiaojian.pmpjssj==''){this.tiaojian.pmpjssj=null};
+					if(this.tiaojian.pmpqpj==''){this.tiaojian.pmpqpj=null};
+					this.goToPage(1,3,this.tiaojian.pmpname,this.tiaojian.pmpms,this.tiaojian.pmpkssj,this.tiaojian.pmpjssj,this.tiaojian.pmpqpj);
+				},
+				tableRowClassName({
+					row,
+					rowIndex
+				}) {
+					if(rowIndex === 1) {
+						return 'warning-row';
+					} else if(rowIndex === 3) {
+						return 'success-row';
+					}
+					return '';
+				},
+				xiugai(pmpid) {
+					indexApp.showView('goodsUpdate.html');
+					sessionStorage.setItem('pmpid1', pmpid);
+				},
+				shangchu(pmpid, kssj, jssj) {
+					let _this = this;
+					this.$confirm('是否移除会员信息?', '系统提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						$.ajax(`http://127.0.0.1:8080/api/paimai/shangchu/${pmpid}/${kssj}/${jssj}`, 
+							{
+							type: "delete",
+							dataType: "json",
+							success(data) {
+								if(data.code == "100") {
+									_this.$message(data.msg);
+								} else {
+									_this.$message({
+										type: 'success',
+										message: '删除成功!'
+									});
+									indexApp.showView('goodsGLiList.html');
+									/*$('#cnt').load("goodsGLiList.html");*/
+								}
+							}
+						});
+					}).catch(() => {
+						this.$message({	
+							type: 'info',
+							message: '已取消删除'
+						});
+					});
+				},
+				handleSizeChange(val) {
+					this.goToPage(this.pageInfo.pageNum, val, this.tiaojian.pmpname, this.tiaojian.pmpms, this.tiaojian.pmpkssj, this.tiaojian.pmpjssj, this.tiaojian.pmpqpj);
+				},
+				handleCurrentChange(val) {
+					this.goToPage(val, this.pageInfo.pageSize, this.tiaojian.pmpname, this.tiaojian.pmpms, this.tiaojian.pmpkssj, this.tiaojian.pmpjssj, this.tiaojian.pmpqpj);
+				},
+				goToPage(n, s, pmpname, pmpms, pmpkssj, pmpjssj, pmpqpj) {
+					let _this = this;
+					$.getJSON(`http://127.0.0.1:8080/api/paimai/shouye/${n}/${s}/${pmpname}/${pmpms}/${pmpkssj}/${pmpjssj}/${pmpqpj}`, function(date) {
+						_this.pageInfo = date;
+					});
+				}
+			},
+					
+			mounted() {
+				setTimeout(() => {
+					this.loading = false;
+				}, 1000);
+				this.goToPage(1, 3, this.tiaojian.pmpname, this.tiaojian.pmpms, this.tiaojian.pmpkssj, this.tiaojian.pmpjssj, this.tiaojian.pmpqpj);
+			}
+		});
+
+	</script>
+
 </html>
